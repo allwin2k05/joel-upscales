@@ -14,11 +14,13 @@ import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import GrainyDotsBackground from './components/GrainyDotsBackground';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <div className="relative flex flex-col min-h-screen bg-gradient-to-b from-gray-950 via-black to-black text-white">
           {/* Global interactive mouse-tracking dot background */}
           <GrainyDotsBackground 
