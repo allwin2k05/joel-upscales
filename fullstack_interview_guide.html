@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full-Stack Interview Guide - Joel's Upscales</title>
+  <!-- Google Fonts & Tailwind CSS for premium design -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      body {
+        background-color: white;
+        color: black;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      pre, code {
+        background-color: #f3f4f6 !important;
+        color: #1f2937 !important;
+        border: 1px solid #e5e7eb !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans leading-relaxed">
+
+  <!-- Header Section (Fixed for Web, Hidden on Print) -->
+  <div class="no-print bg-slate-950/80 border-b border-slate-800 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <span class="text-red-500 font-bold text-lg">🚀 Interview Prep Tool</span>
+      <span class="text-slate-400 text-sm hidden md:inline">|</span>
+      <span class="text-slate-400 text-xs hidden md:inline">Joel's Upscales Full-Stack Guide</span>
+    </div>
+    <button onclick="window.print()" class="bg-red-600 hover:bg-red-500 transition-colors text-white font-semibold px-5 py-2 rounded-lg text-sm shadow-lg shadow-red-600/20 flex items-center space-x-2">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <span>Save / Print as PDF</span>
+    </button>
+  </div>
+
+  <!-- Document Container -->
+  <div class="max-w-4xl mx-auto px-6 py-12 bg-slate-900 print:bg-white print:text-black">
+    
+    <!-- Title Page Cover -->
+    <div class="text-center border-b border-slate-800 pb-10 mb-10 print:border-slate-300">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white print:text-black">
+        Full-Stack Developer Interview Guide
+      </h1>
+      <p class="text-red-500 font-semibold text-lg mt-3 uppercase tracking-wider">
+        Project Focus: Joel's Upscales
+      </p>
+      <p class="text-slate-400 text-sm mt-2 print:text-slate-600">
+        Comprehensive guide detailing architecture, React hooks, authentication state-guards, database relational-schema, and custom animations.
+      </p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 mb-10 print:bg-slate-50 print:border-slate-300">
+      <h2 class="text-xl font-bold text-white mb-4 print:text-black">Table of Contents</h2>
+      <ul class="space-y-2 text-slate-300 text-sm print:text-slate-700">
+        <li><a href="#system-arch" class="hover:text-red-400 transition-colors">1. System Architecture Overview</a></li>
+        <li><a href="#tech-stack" class="hover:text-red-400 transition-colors">2. Full-Stack Technology Choices</a></li>
+        <li><a href="#postgres-db" class="hover:text-red-400 transition-colors">3. Database Schema & Seeding (PostgreSQL)</a></li>
+        <li><a href="#auth-guard" class="hover:text-red-400 transition-colors">4. Authentication Flow & Client-Side Route Guards</a></li>
+        <li><a href="#ui-ux-graphics" class="hover:text-red-400 transition-colors">5. UI/UX Graphics & CSS Glassmorphism</a></li>
+        <li><a href="#qa-interview" class="hover:text-red-400 transition-colors">6. Core Technical Interview Questions & Answers</a></li>
+      </ul>
+    </div>
+
+    <!-- Section 1 -->
+    <div id="system-arch" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        1. System Architecture Overview
+      </h2>
+      <p class="text-slate-300 mb-4 print:text-slate-700">
+        The application is architected as a **Serverless Single Page Application (SPA)**. Rather than hosting a dedicated backend server (e.g., Express on Node.js) that requires ongoing maintenance, routing logs, and API hosting, the project relies on **Backend-as-a-Service (BaaS)** provided by **Supabase**.
+      </p>
+      
+      <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 mb-4 print:bg-slate-50 print:border-slate-300">
+        <h3 class="text-red-400 font-bold text-sm mb-3 uppercase tracking-wider print:text-red-600">Architectural Flow</h3>
+        <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm print:text-slate-700">
+          <li><strong>Client Request</strong>: The browser client downloads optimized React assets from Vercel's global CDN.</li>
+          <li><strong>Auth Validation</strong>: On load, the custom <code>AuthContext</code> verifies active sessions using JWT tokens stored in <code>localStorage</code>.</li>
+          <li><strong>Routing & Guarding</strong>: React Router matches the endpoint. If the user is unauthenticated, the <code>ProtectedRoute</code> redirects them to <code>/login</code>.</li>
+          <li><strong>Data Fetching</strong>: Component hooks invoke the Supabase JS Client, making secure CORS-approved REST requests to PostgreSQL.</li>
+          <li><strong>Mailing Services</strong>: Contact forms invoke the client-side EmailJS API directly, forwarding email messages to SMTP servers.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 2 -->
+    <div id="tech-stack" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        2. Full-Stack Technology Choices
+      </h2>
+      <p class="text-slate-300 mb-6 print:text-slate-700">
+        During your interview, you should confidently explain the decisions behind each element of the technology stack:
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300 border-collapse print:text-slate-800">
+          <thead>
+            <tr class="bg-slate-950 border-b border-slate-800 print:bg-slate-100 print:border-slate-300">
+              <th class="p-3 font-semibold text-white print:text-black">Technology</th>
+              <th class="p-3 font-semibold text-white print:text-black">Project Role</th>
+              <th class="p-3 font-semibold text-white print:text-black">Interview Rationale (Why Selected?)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 print:divide-slate-200">
+            <tr>
+              <td class="p-3 font-bold text-white print:text-black">React (v18)</td>
+              <td class="p-3">Frontend Engine</td>
+              <td class="p-3">Component isolation enables scalable, reusable UI code. React's virtual DOM minimizes reflow overhead for animations, and the Context API makes session state-sharing seamless.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-white print:text-black">TypeScript</td>
+              <td class="p-3">Language Layer</td>
+              <td class="p-3">Static checking ensures database schema types match frontend component states, catching compiler bugs locally before deployment.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-white print:text-black">Tailwind CSS</td>
+              <td class="p-3">Styling System</td>
+              <td class="p-3">Utility classes eliminate custom stylesheet bloat. It compiles into optimized CSS and simplifies layout designs via standardized margins, breakpoints, and grid layouts.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-white print:text-black">Supabase</td>
+              <td class="p-3">BaaS & Database</td>
+              <td class="p-3">Eliminates boilerplate backend API routes for authentication and file uploads, using PostgreSQL directly with Row-Level Security (RLS) policies.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-white print:text-black">Vite</td>
+              <td class="p-3">Bundler & Dev Server</td>
+              <td class="p-3">Dramatically speeds up development compiles via ES modules. Its production build process automatically minifies assets and handles code-splitting.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div id="postgres-db" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        3. Database Schema & Seeding (PostgreSQL)
+      </h2>
+      <p class="text-slate-300 mb-4 print:text-slate-700">
+        Our database engine runs on **PostgreSQL**. Unlike NoSQL engines, PostgreSQL enforces relational models and guarantees **ACID compliance** (Atomicity, Consistency, Isolation, Durability).
+      </p>
+
+      <div class="space-y-4">
+        <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 print:bg-slate-50 print:border-slate-300">
+          <h3 class="text-white font-bold text-sm mb-2 print:text-black">Table 1: <code>movies</code></h3>
+          <p class="text-slate-400 text-xs mb-3 print:text-slate-600">Stores the restored and fan-edited film catalog.</p>
+          <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 font-mono print:text-slate-700">
+            <li><code>id</code> (uuid, Primary Key) - Auto-generated unique identifier</li>
+            <li><code>title</code> (text) - Title of the film</li>
+            <li><code>year</code> (integer) - Original release year</li>
+            <li><code>genre</code> (text) - Comma-separated list of genres</li>
+            <li><code>description</code> (text) - Synopsis</li>
+            <li><code>quality</code> (text) - Resolution metrics (e.g., "1080p AI-Restored")</li>
+            <li><code>cover_url</code> (text) - URL to cover art stored in Supabase Storage</li>
+            <li><code>drive_url</code> (text) - Google Drive download link</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 print:bg-slate-50 print:border-slate-300">
+          <h3 class="text-white font-bold text-sm mb-2 print:text-black">Table 2: <code>requests</code></h3>
+          <p class="text-slate-400 text-xs mb-3 print:text-slate-600">Tracks user restoration submissions.</p>
+          <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 font-mono print:text-slate-700">
+            <li><code>id</code> (uuid, Primary Key)</li>
+            <li><code>movie_title</code> (text) - Name of requested film</li>
+            <li><code>year</code> (integer) - Release year</li>
+            <li><code>user_email</code> (text) - Requester account</li>
+            <li><code>status</code> (text) - Progress tracking ('pending', 'completed')</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 4 -->
+    <div id="auth-guard" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        4. Authentication Flow & Client-Side Route Guards
+      </h2>
+      <p class="text-slate-300 mb-4 print:text-slate-700">
+        Authentication utilizes secure **JWT tokens**. The state is managed via React's Context API in `AuthContext`, and route protection is enforced client-side before render.
+      </p>
+
+      <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto print:bg-slate-50 print:border-slate-300 print:text-slate-800">
+        <span class="text-slate-500 font-bold block mb-2">// ProtectedRoute Component logic:</span>
+        const ProtectedRoute: React.FC&lt;{ children: React.ReactNode; adminOnly?: boolean }&gt; = ({ children, adminOnly }) =&gt; {<br>
+        &nbsp;&nbsp;const { isLoggedIn, isAdmin, loading } = useAuth();<br>
+        &nbsp;&nbsp;const location = useLocation();<br><br>
+        &nbsp;&nbsp;if (loading) return &lt;LoadingSpinner /&gt;;<br><br>
+        &nbsp;&nbsp;if (!isLoggedIn) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;return &lt;Navigate to="/login" state={{ from: location }} replace /&gt;;<br>
+        &nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;if (adminOnly && !isAdmin) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;return &lt;Navigate to="/" replace /&gt;;<br>
+        &nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;return &lt;&gt;{children}&lt;/&gt;;<br>
+        };
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div id="ui-ux-graphics" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        5. UI/UX Graphics & CSS Glassmorphism
+      </h2>
+      <p class="text-slate-300 mb-4 print:text-slate-700">
+        To set our app apart visually, we implemented premium glassmorphism classes and an interactive physics-based canvas background.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 print:bg-slate-50 print:border-slate-300">
+          <h3 class="text-red-400 font-bold text-sm mb-2 uppercase tracking-wider print:text-red-600">Glass Panel CSS</h3>
+          <p class="text-slate-300 text-xs leading-relaxed print:text-slate-700">
+            Using `backdrop-filter: blur(16px)` to achieve blurred background panels. Combined with `inset 0 1px 1px 0 rgba(255,255,255,0.05)`, it injects a 1px bright top-border, simulating reflection and premium styling.
+          </p>
+        </div>
+
+        <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 print:bg-slate-50 print:border-slate-300">
+          <h3 class="text-red-400 font-bold text-sm mb-2 uppercase tracking-wider print:text-red-600">Canvas Dot Animation</h3>
+          <p class="text-slate-300 text-xs leading-relaxed print:text-slate-700">
+            A background canvas monitors mouse movements. Using vector geometry, each dot calculates its relative distance from the pointer and accelerates away (repulsion) when inside the radius. The rendering loops inside `requestAnimationFrame` to match the native refresh rate, optimizing GPU performance.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 6 -->
+    <div id="qa-interview" class="mb-12">
+      <h2 class="text-2xl font-bold text-white border-b border-slate-800 pb-2 mb-4 print:text-black print:border-slate-300">
+        6. Core Technical Interview Questions & Answers
+      </h2>
+      <p class="text-slate-300 mb-6 print:text-slate-700">
+        These are direct, target-matched questions and professional responses to prepare you for the technical evaluation:
+      </p>
+
+      <div class="space-y-6">
+        <!-- Q1 -->
+        <div class="border-l-4 border-red-500 pl-4 py-1">
+          <h3 class="text-white font-bold text-base mb-2 print:text-black">
+            Q1: What is a JSON Web Token (JWT) and how does our application use it?
+          </h3>
+          <p class="text-slate-300 text-sm print:text-slate-700">
+            A JWT is a stateless, encoded string containing claims (such as user ID, role, and email) verified by a cryptographic signature. When a user logs in, Supabase generates the token. The browser caches it in <code>localStorage</code>. For all database transactions, the token is included in the Authorization header. Supabase decrypts and verifies the signature using the server's private key to authorize the transaction instantly without checking stateful tables.
+          </p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="border-l-4 border-red-500 pl-4 py-1">
+          <h3 class="text-white font-bold text-base mb-2 print:text-black">
+            Q2: Can you explain the client-side router 404 issue and how your <code>vercel.json</code> rewrites rule fixes it?
+          </h3>
+          <p class="text-slate-300 text-sm print:text-slate-700">
+            In a React single-page app, routing is handled client-side. When navigating to <code>/about</code>, React Router updates the address bar without talking to the server. However, if the user hits refresh on <code>/about</code>, the browser requests the file <code>/about</code> from the Vercel hosting server, which doesn't exist, throwing a 404. The <code>vercel.json</code> rewrite rule fixes this by redirecting all requests to <code>/index.html</code>, allowing React Router to boot up, parse the path, and mount the correct component.
+          </p>
+        </div>
+
+        <!-- Q3 -->
+        <div class="border-l-4 border-red-500 pl-4 py-1">
+          <h3 class="text-white font-bold text-base mb-2 print:text-black">
+            Q3: Why did we experience a black screen crash on login, and how does React handle unhandled runtime errors?
+          </h3>
+          <p class="text-slate-300 text-sm print:text-slate-700">
+            The login page entered a loading state, which rendered the <code>&lt;Loader2 /&gt;</code> component. However, the import statement for <code>Loader2</code> was missing from <code>lucide-react</code>. This triggered a <code>ReferenceError</code> at runtime. In React 16+, unhandled runtime errors during the render phase cause React to unmount the entire component tree (yielding a blank black screen) to prevent corrupted user interfaces. Fixing the import resolved the error.
+          </p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="border-l-4 border-red-500 pl-4 py-1">
+          <h3 class="text-white font-bold text-base mb-2 print:text-black">
+            Q4: How does the <code>ScrollToTop</code> component improve user experience during navigation transitions?
+          </h3>
+          <p class="text-slate-300 text-sm print:text-slate-700">
+            In single-page React apps, when a user scrolls down on the home page and clicks a link to the About page, the browser keeps the vertical scroll offset from the previous page, leaving the user scrolled halfway down the new page. The <code>ScrollToTop</code> component listens to path modifications via the <code>useLocation</code> hook and executes <code>window.scrollTo(0, 0)</code>, resetting the view back to the top on every transition.
+          </p>
+        </div>
+        
+        <!-- Q5 -->
+        <div class="border-l-4 border-red-500 pl-4 py-1">
+          <h3 class="text-white font-bold text-base mb-2 print:text-black">
+            Q5: How does the application support local offline or fallback testing if Supabase environment keys are missing?
+          </h3>
+          <p class="text-slate-300 text-sm print:text-slate-700">
+            The application checks if Supabase is configured via <code>isSupabaseConfigured()</code> in <code>supabase.ts</code>. If keys are missing, the client initializes as <code>null</code>. The services and the Auth Context intercept this state and fall back to local memory data providers and <code>localStorage</code> mock sessions. This allows developers to test the layout and transitions immediately without database configuration.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Page -->
+    <div class="border-t border-slate-800 pt-8 mt-12 text-center text-slate-500 text-xs print:border-slate-300 print:text-slate-600">
+      Good luck with your interview tomorrow! You've got this.
+    </div>
+
+  </div>
+
+</body>
+</html>
