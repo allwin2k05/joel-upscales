@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Star, Heart } from 'lucide-react';
 import { Movie } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +11,7 @@ interface MovieCardProps {
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const { toggleFavorite, isFavorite } = useAuth();
   const isFav = isFavorite(movie.id);
+  const navigate = useNavigate();
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -18,10 +19,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     toggleFavorite(movie.id);
   };
 
+  const handleCardClick = () => {
+    navigate(`/movie/${movie.id}`);
+  };
+
   return (
-    <Link 
-      to={`/movie/${movie.id}`} 
-      className="group relative overflow-hidden rounded-lg transition-transform duration-300 hover:scale-[1.03] hover:z-10"
+    <div 
+      onClick={handleCardClick}
+      className="group relative overflow-hidden rounded-lg transition-transform duration-300 hover:scale-[1.03] hover:z-10 cursor-pointer"
     >
       <div className="aspect-[2/3] relative bg-gray-900 overflow-hidden">
         {/* Poster Image */}
@@ -69,7 +74,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           View Details
         </span>
       </div>
-    </Link>
+    </div>
   );
 };
 
