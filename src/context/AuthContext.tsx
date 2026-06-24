@@ -155,8 +155,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           if (error) throw error;
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error('Error updating favorite in Supabase:', e);
+        alert(`Supabase Error: ${e.message || 'Database error'}\n\nPlease verify you have created the 'user_favorites' table in your Supabase SQL Editor.`);
         // Rollback state on error
         setFavorites(prev => isFav ? [...prev, movieId] : prev.filter(id => id !== movieId));
       }
