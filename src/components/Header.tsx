@@ -72,14 +72,6 @@ const Header: React.FC = () => {
                 Movies
               </Link>
               <Link 
-                to="/favorites" 
-                className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                  location.pathname === '/favorites' ? 'text-red-400' : 'text-white'
-                }`}
-              >
-                My List
-              </Link>
-              <Link 
                 to="/request" 
                 className={`text-sm font-medium transition-colors hover:text-red-400 ${
                   location.pathname === '/request' ? 'text-red-400' : 'text-white'
@@ -117,10 +109,14 @@ const Header: React.FC = () => {
 
               {user && (
                 <div className="flex items-center space-x-4 pl-4 border-l border-white/10">
-                  <span className="flex items-center text-sm font-semibold text-white bg-gradient-to-r from-red-600/30 to-purple-600/30 border border-red-500/20 px-3.5 py-1.5 rounded-full shadow-md">
+                  <Link
+                    to="/favorites"
+                    className="flex items-center text-sm font-semibold text-white bg-gradient-to-r from-red-600/30 to-purple-600/30 border border-red-500/20 px-3.5 py-1.5 rounded-full shadow-md hover:from-red-600/40 hover:to-purple-600/40 hover:border-red-500/40 transition-all duration-300 transform hover:scale-[1.02]"
+                    title="View My List"
+                  >
                     <User className="h-3.5 w-3.5 mr-1.5 text-red-400" />
                     {user.name}
-                  </span>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="flex items-center text-sm font-medium text-gray-400 hover:text-red-400 transition-colors"
@@ -186,15 +182,6 @@ const Header: React.FC = () => {
                 Movies
               </Link>
               <Link 
-                to="/favorites" 
-                className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                  location.pathname === '/favorites' ? 'text-red-400' : 'text-white'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                My List
-              </Link>
-              <Link 
                 to="/request" 
                 className={`text-sm font-medium transition-colors hover:text-red-400 ${
                   location.pathname === '/request' ? 'text-red-400' : 'text-white'
@@ -236,10 +223,15 @@ const Header: React.FC = () => {
 
               {isLoggedIn && user ? (
                 <div className="flex flex-col space-y-3 pt-2 border-t border-white/5">
-                  <span className="flex items-center text-sm font-semibold text-white bg-gradient-to-r from-red-600/35 to-purple-600/35 border border-red-500/30 px-3 py-1.5 rounded-lg w-max">
+                  <Link
+                    to="/favorites"
+                    className="flex items-center text-sm font-semibold text-white bg-gradient-to-r from-red-600/35 to-purple-600/35 border border-red-500/30 px-3 py-1.5 rounded-lg w-max hover:from-red-600/45 hover:to-purple-600/45 transition-all"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    title="View My List"
+                  >
                     <User className="h-3.5 w-3.5 mr-1.5 text-red-400" />
                     {user.name}
-                  </span>
+                  </Link>
                   <button
                     onClick={() => {
                       handleLogout();
