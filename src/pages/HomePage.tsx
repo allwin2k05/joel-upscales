@@ -5,11 +5,13 @@ import FanEditCard from '../components/FanEditCard';
 import UpwardsTab from '../components/UpwardsTab';
 import { getMovies, getFanedits } from '../services/dataService';
 import { Movie, FanEdit } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [fanedits, setFanedits] = useState<FanEdit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { favorites } = useAuth();
 
   useEffect(() => {
     const loadData = async () => {
@@ -43,13 +45,23 @@ const HomePage: React.FC = () => {
   // Get recent movies (based on year)
   const recentMovies = [...movies].sort((a, b) => b.year - a.year).slice(0, 5);
 
+  // Filter movies that are in user's favorites list
+  const favoriteMovies = movies.filter(movie => favorites.includes(movie.id));
+
   // Get featured fan edits
   const featuredFanEdits = fanedits.slice(0, 3);
 
   return (
     <div className="bg-transparent min-h-screen">
       <Hero movies={movies} />
-      
+            
+      {/* My List / Favorites Row */}
+      {favoriteMovies.length > 0 && (
+        <div className="pt-8">
+          <MovieGrid movies={favoriteMovies} title="My List" />
+        </div>
+      )}
+
       <div className="pt-8">
         <MovieGrid movies={topRatedMovies} title="Top Rated Upscales" />
       </div>

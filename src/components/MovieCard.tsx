@@ -1,13 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
+import { Star, Heart } from 'lucide-react';
 import { Movie } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+  const { toggleFavorite, isFavorite } = useAuth();
+  const isFav = isFavorite(movie.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(movie.id);
+  };
+
   return (
     <Link 
       to={`/movie/${movie.id}`} 
@@ -38,12 +48,21 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       </div>
       
       {/* Hover Info Panel */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-4 pointer-events-none">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-4">
         <h3 className="text-xl font-bold text-white mb-2">{movie.title}</h3>
         <p className="text-gray-300 text-sm mb-2">{movie.year}</p>
-        <div className="flex items-center mb-3">
-          <Star className="h-4 w-4 text-yellow-400 mr-1" />
-          <span className="text-white">{movie.rating.toFixed(1)}</span>
+        <div className="flex items-center space-x-3 mb-3">
+          <div className="flex items-center">
+            <Star className="h-4 w-4 text-yellow-400 mr-1" />
+            <span className="text-white">{movie.rating.toFixed(1)}</span>
+          </div>
+          <button
+            onClick={handleFavoriteClick}
+            className="p-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none"
+            title={isFav ? "Remove from Favorites" : "Add to Favorites"}
+          >
+            <Heart className={`h-4.5 w-4.5 transition-colors ${isFav ? 'fill-red-500 text-red-500' : 'text-gray-300 hover:text-red-400'}`} />
+          </button>
         </div>
         <p className="text-xs text-gray-400 text-center line-clamp-3 mb-4">{movie.plot}</p>
         <span className="bg-purple-600 text-white text-xs font-medium py-1.5 px-3 rounded-full">

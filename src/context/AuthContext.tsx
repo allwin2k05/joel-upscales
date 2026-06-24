@@ -16,6 +16,9 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
+  favorites: string[];
+  toggleFavorite: (movieId: string) => void;
+  isFavorite: (movieId: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'allwinjoel2k05@gmail.com';
 
@@ -81,6 +85,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     }
   }, [adminEmail]);
+
+  // Synchronize favorites from local storage when user session changes
+  useEffect(() => {
+    if (user) {
+      const key = `favorites_${user.email || user.id}`;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        try {
+          setFavorites(JSON.parse(stored));
+        } catch (e) {
+          setFavorites([]);
+        }
+      } else {
+        setFavorites([]);
+      }
+    } else {
+      setFavorites([]);
+    }
+  }, [user]);
+
+  const toggleFavorite = (movieId: string) => {
+    if (!user) return;
+    const key = `favorites_${user.email || user.id}`;
+    setFavorites(prev => {
+      const updated = prev.includes(movieId)
+        ? prev.filter(id => id !== movieId)
+        : [...prev, movieId];
+      localStorage.setItem(key, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const isFavorite = (movieId: string) => {
+    return favorites.includes(movieId);
+  };
 
   const signIn = async (emailOrUsername: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setLoading(true);
@@ -203,7 +242,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isAdmin = user?.role === 'admin' || user?.email === adminEmail;
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, isAdmin, loading, signIn, signUp, signOut, favorites, toggleFavorite, isFavorite }}>
       {children}
     </AuthContext.Provider>
   );

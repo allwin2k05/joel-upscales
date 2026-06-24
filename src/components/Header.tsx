@@ -72,6 +72,14 @@ const Header: React.FC = () => {
                 Movies
               </Link>
               <Link 
+                to="/favorites" 
+                className={`text-sm font-medium transition-colors hover:text-red-400 ${
+                  location.pathname === '/favorites' ? 'text-red-400' : 'text-white'
+                }`}
+              >
+                My List
+              </Link>
+              <Link 
                 to="/request" 
                 className={`text-sm font-medium transition-colors hover:text-red-400 ${
                   location.pathname === '/request' ? 'text-red-400' : 'text-white'
@@ -176,6 +184,15 @@ const Header: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Movies
+              </Link>
+              <Link 
+                to="/favorites" 
+                className={`text-sm font-medium transition-colors hover:text-red-400 ${
+                  location.pathname === '/favorites' ? 'text-red-400' : 'text-white'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                My List
               </Link>
               <Link 
                 to="/request" 

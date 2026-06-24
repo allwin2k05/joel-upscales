@@ -11,6 +11,7 @@ import RequestPage from './pages/RequestPage';
 import DonatePage from './pages/DonatePage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
+import FavoritesPage from './pages/FavoritesPage';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import GrainyDotsBackground from './components/GrainyDotsBackground';
@@ -41,6 +42,7 @@ function App() {
               <Route path="/movie/:id" element={<ProtectedRoute><MovieDetailsPage /></ProtectedRoute>} />
               <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
               <Route path="/movies" element={<ProtectedRoute><MoviesPage /></ProtectedRoute>} />
+              <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
               <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
               <Route path="/request" element={<ProtectedRoute><RequestPage /></ProtectedRoute>} />
               <Route path="/donate" element={<ProtectedRoute><DonatePage /></ProtectedRoute>} />
