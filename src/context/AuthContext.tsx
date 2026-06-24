@@ -86,35 +86,88 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [adminEmail]);
 
-  // Synchronize favorites from local storage when user session changes
+  // Synchronize favorites from Supabase or Local Storage when user session changes
   useEffect(() => {
-    if (user) {
-      const key = `favorites_${user.email || user.id}`;
-      const stored = localStorage.getItem(key);
-      if (stored) {
+    const loadFavorites = async () => {
+      if (!user) {
+        setFavorites([]);
+        return;
+      }
+
+      // Check if Supabase is active
+      if (isSupabaseConfigured() && supabase) {
         try {
-          setFavorites(JSON.parse(stored));
+          const { data, error } = await supabase
+            .from('user_favorites')
+            .select('movie_id');
+          
+          if (error) throw error;
+          
+          if (data) {
+            setFavorites(data.map(item => item.movie_id));
+          }
         } catch (e) {
-          setFavorites([]);
+          console.error('Error fetching favorites from Supabase:', e);
         }
       } else {
-        setFavorites([]);
+        // Fallback: local storage
+        const key = `favorites_${user.email || user.id}`;
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          try {
+            setFavorites(JSON.parse(stored));
+          } catch (e) {
+            setFavorites([]);
+          }
+        } else {
+          setFavorites([]);
+        }
       }
-    } else {
-      setFavorites([]);
-    }
+    };
+
+    loadFavorites();
   }, [user]);
 
-  const toggleFavorite = (movieId: string) => {
+  const toggleFavorite = async (movieId: string) => {
     if (!user) return;
-    const key = `favorites_${user.email || user.id}`;
-    setFavorites(prev => {
-      const updated = prev.includes(movieId)
-        ? prev.filter(id => id !== movieId)
-        : [...prev, movieId];
+
+    const isFav = favorites.includes(movieId);
+
+    // Update local state immediately (Optimistic UI update)
+    setFavorites(prev => isFav ? prev.filter(id => id !== movieId) : [...prev, movieId]);
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        if (isFav) {
+          // Remove from Supabase
+          const { error } = await supabase
+            .from('user_favorites')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('movie_id', movieId);
+          
+          if (error) throw error;
+        } else {
+          // Add to Supabase
+          const { error } = await supabase
+            .from('user_favorites')
+            .insert({ user_id: user.id, movie_id: movieId });
+          
+          if (error) throw error;
+        }
+      } catch (e) {
+        console.error('Error updating favorite in Supabase:', e);
+        // Rollback state on error
+        setFavorites(prev => isFav ? [...prev, movieId] : prev.filter(id => id !== movieId));
+      }
+    } else {
+      // Fallback: local storage
+      const key = `favorites_${user.email || user.id}`;
+      const updated = isFav
+        ? favorites.filter(id => id !== movieId)
+        : [...favorites, movieId];
       localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
-    });
+    }
   };
 
   const isFavorite = (movieId: string) => {

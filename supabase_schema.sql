@@ -84,3 +84,25 @@ ON public.requests FOR DELETE USING (auth.role() = 'authenticated');
 -- Note: Buckets can also be created manually via the Supabase Dashboard under Storage.
 -- Target bucket name: "assets"
 -- Make sure the bucket "assets" is set to PUBLIC.
+
+-- 9. Create User Favorites Table
+CREATE TABLE IF NOT EXISTS public.user_favorites (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    movie_id TEXT REFERENCES public.movies(id) ON DELETE CASCADE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(user_id, movie_id)
+);
+
+-- Enable RLS for User Favorites
+ALTER TABLE public.user_favorites ENABLE ROW LEVEL SECURITY;
+
+-- Policies for User Favorites
+CREATE POLICY "Allow users to view their own favorites" 
+ON public.user_favorites FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Allow users to insert their own favorites" 
+ON public.user_favorites FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Allow users to delete their own favorites" 
+ON public.user_favorites FOR DELETE USING (auth.uid() = user_id);
